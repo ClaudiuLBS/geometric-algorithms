@@ -113,9 +113,15 @@ PointPosition RayCasting::getPointPosition(Point point, Polygon& polygon) {
   else return INSIDE;
 }
 
-int main() {
-  ifstream fin("concav2.in");
-  ofstream fout("out.txt");
+int main(int argc, char* argv[]) {
+  cout << argc;
+  if (argc < 3) {
+    cout << "Please pass the input and output files name!\n";
+    return 0;
+  }
+
+  ifstream fin(argv[1]);
+  ofstream fout(argv[2]);
 
   map<Point, PointPosition> pointPositions;
   
@@ -130,10 +136,9 @@ int main() {
     fin >> p;
     pointPositions[p] = RayCasting::getPointPosition(p, polygon);
     fout << ((pointPositions[p] == INSIDE) ? "INSIDE" : ((pointPositions[p] == OUTSIDE) ? "OUTSIDE" : "BOUNDARY") ) << endl;
-    cout << p << pointPositions[p] << endl;
   }
 
-  Renderer renderer(1200, 1200, "raycasting");
+  Renderer renderer(800, 800, "Ray Casting");
   bool running = true;
   while (running) { 
     if (renderer.shouldQuit())
@@ -142,6 +147,8 @@ int main() {
     renderer.clear();
     renderer.drawAxis();
     renderer.drawPolygon(polygon);
+
+    // Render all points
     map<Point, PointPosition>::iterator it;
     for (it = pointPositions.begin(); it != pointPositions.end(); ++it) {
       Point point = it->first;
@@ -161,4 +168,7 @@ int main() {
     }
     renderer.update();
   }
+  fin.close();
+  fout.close();
+  return 0;
 }
