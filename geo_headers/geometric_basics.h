@@ -166,7 +166,13 @@ public:
   void addPoint(Point& newPoint);
   Point getPoint(int index);
   int getSize();
+  void checkLastPoint();
   void read(istream& in);
+
+  ll getRightExtreme() { return rightExtreme; }
+  ll getLeftExtreme() { return leftExtreme; }
+  ll getTopExtreme() { return topExtreme; }
+  ll getBottomExtreme() { return bottomExtreme; }
 };
 
 Polygon::Polygon() {
@@ -206,6 +212,14 @@ Point Polygon::getPoint(int index) {
 
 int Polygon::getSize() {
   return points.size();
+}
+
+void Polygon::checkLastPoint() {
+  Point p1 = points[points.size() - 2];
+  Point p2 = points[points.size() - 1];
+  Point p3 = points[0];
+  if (orientationTest(p1, p2, p3) == 0)
+    points.pop_back();
 }
 
 void Polygon::read(istream& in) {
