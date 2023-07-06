@@ -35,6 +35,7 @@ public:
   bool operator==(const Point& point);
   Point& operator=(const Point& point);
   friend ostream& operator<<(ostream& out, Point point);
+  friend istream& operator>>(istream& in, Point& point);
 };
 
 void Point::setPoint(ll x, ll y) {
@@ -70,6 +71,10 @@ Point& Point::operator=(const Point& point) {
 ostream& operator<<(ostream& out, Point point) {
   out << "(" << point.x << ", " << point.y << ")";
   return out;
+}
+istream& operator>>(istream& in, Point& point) {
+  in >> point.x >> point.y;
+  return in;
 }
 
 
@@ -157,9 +162,11 @@ private:
 public:
   Polygon();
   Polygon(vector<Point> points);
+
   void addPoint(Point& newPoint);
   Point getPoint(int index);
   int getSize();
+  void read(istream& in);
 };
 
 Polygon::Polygon() {
@@ -196,8 +203,18 @@ void Polygon::addPoint(Point& newPoint) {
 Point Polygon::getPoint(int index) {
   return points[index];
 }
+
 int Polygon::getSize() {
   return points.size();
+}
+
+void Polygon::read(istream& in) {
+  int pointsCount;
+  Point p;
+  for (in >> pointsCount; pointsCount > 0; pointsCount--) {
+    in >> p;
+    points.push_back(p);
+  }
 }
 
 

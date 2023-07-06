@@ -33,7 +33,6 @@ public:
 
   void clear();
   void update();
-  void updateScale(Point point);
   void drawAxis();
   void drawPoint(Point point, int, int, int);
   void drawPoint(int x, int y, int, int, int);
@@ -48,19 +47,20 @@ public:
 };
 
 int Renderer::normalizeX(int x) {
-  float maxX = SCREEN_WIDTH / 2 - 10; // +/-
-  
+  // recalculate the scale
+  float maxX = SCREEN_WIDTH / 3;
   scale = min(scale, abs((float)maxX / x));
-  cout << maxX << " " << scale << endl;
-  // scale = min(scale, SCREEN_WIDTH * scale / 3);
+  
+  // return normalized x
   return SCREEN_WIDTH / 2 + scale * x;
 }
 
 int Renderer::normalizeY(int y) {
-  float maxY = SCREEN_HEIGHT / 2 - 10; // +/-
+  // recalculate the scale
+  float maxY = SCREEN_HEIGHT / 3;
   scale = min(scale, abs((float)maxY / y));
-  cout << maxY << " " << scale << endl;
-  // scale = min(scale, SCREEN_HEIGHT * scale / 3);
+  
+  // return normalized y
   return SCREEN_HEIGHT / 2 - scale * y;
 }
 
@@ -83,8 +83,8 @@ void Renderer::update() {
 
 void Renderer::drawAxis() {
   SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
-  SDL_RenderDrawLine(renderer, 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2);
-  SDL_RenderDrawLine(renderer, SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT);
+  SDL_RenderDrawLine(renderer, 10, SCREEN_HEIGHT / 2, SCREEN_WIDTH - 10, SCREEN_HEIGHT / 2);
+  SDL_RenderDrawLine(renderer, SCREEN_WIDTH / 2, 10, SCREEN_WIDTH / 2, SCREEN_HEIGHT - 10);
 }
 void Renderer::drawPoint(int x, int y, int r = 22, int g = 14, int b = 237) { 
   SDL_SetRenderDrawColor(renderer, r, g, b, 255);
@@ -108,7 +108,7 @@ void Renderer::drawLine(Line line, int r = 181, int g = 14, int b = 237) {
   );
 }
 
-void Renderer::drawPolygon(Polygon polygon, int r = 51, int g = 237, int b = 14) {
+void Renderer::drawPolygon(Polygon polygon, int r = 10, int g = 100, int b = 10) {
   SDL_SetRenderDrawColor(renderer, r, g, b, 255);
 
   int numPoints = polygon.getSize();
