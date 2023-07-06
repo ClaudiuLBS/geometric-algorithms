@@ -137,6 +137,7 @@ bool Line::operator==(const Line& line) {
 Line& Line::operator=(const Line& line) {
   setStartPoint(line.startPoint);
   setEndPoint(line.endPoint);
+  return *this;
 }
 
 ostream& operator<<(ostream& out, Line line) {
@@ -157,6 +158,8 @@ public:
   Polygon();
   Polygon(vector<Point> points);
   void addPoint(Point& newPoint);
+  Point getPoint(int index);
+  int getSize();
 };
 
 Polygon::Polygon() {
@@ -188,6 +191,13 @@ void Polygon::addPoint(Point& newPoint) {
   leftExtreme = min(leftExtreme, newPoint.getX());
   topExtreme = max(topExtreme, newPoint.getY());
   bottomExtreme = min(bottomExtreme, newPoint.getY());
+}
+
+Point Polygon::getPoint(int index) {
+  return points[index];
+}
+int Polygon::getSize() {
+  return points.size();
 }
 
 
