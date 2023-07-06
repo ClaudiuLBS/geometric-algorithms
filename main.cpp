@@ -6,7 +6,7 @@ const int SCREEN_HEIGHT = 800;
 
 int main(int argc, char* argv[]) {
   Renderer renderer(SCREEN_WIDTH, SCREEN_HEIGHT, "nigger");
-  Line line(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  Line line(0, 0, SCREEN_WIDTH / 2 - 10, SCREEN_HEIGHT / 2 - 10);
 
   bool running = true;
   while (running) {
@@ -15,11 +15,6 @@ int main(int argc, char* argv[]) {
     
     renderer.clear();
     renderer.drawAxis();
-    // renderer.drawLine(line);
-    renderer.drawPoint(-10, -10);
-    renderer.drawPoint(10, -10);
-    renderer.drawPoint(10, 10);
-    renderer.drawPoint(-10, 10);
     renderer.update();
   }
   return 0;

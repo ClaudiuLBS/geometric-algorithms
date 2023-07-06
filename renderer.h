@@ -20,7 +20,7 @@ private:
 public:
   Renderer(int screenWidth, int screenHeight, const char* windowName): SCREEN_WIDTH(screenWidth), SCREEN_HEIGHT(screenHeight), WINDOW_NAME(windowName) {
     SDL_Init(SDL_INIT_EVERYTHING);
-    scale = .5;
+    scale = 100;
     window = SDL_CreateWindow( WINDOW_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, 0);
   }
@@ -48,11 +48,20 @@ public:
 };
 
 int Renderer::normalizeX(int x) {
-  return SCREEN_WIDTH + x;
+  float maxX = SCREEN_WIDTH / 2 - 10; // +/-
+  
+  scale = min(scale, abs((float)maxX / x));
+  cout << maxX << " " << scale << endl;
+  // scale = min(scale, SCREEN_WIDTH * scale / 3);
+  return SCREEN_WIDTH / 2 + scale * x;
 }
 
 int Renderer::normalizeY(int y) {
-  return SCREEN_HEIGHT- y;
+  float maxY = SCREEN_HEIGHT / 2 - 10; // +/-
+  scale = min(scale, abs((float)maxY / y));
+  cout << maxY << " " << scale << endl;
+  // scale = min(scale, SCREEN_HEIGHT * scale / 3);
+  return SCREEN_HEIGHT / 2 - scale * y;
 }
 
 bool Renderer::shouldQuit() {
@@ -72,10 +81,6 @@ void Renderer::update() {
   SDL_RenderPresent(renderer);
 }
 
-void Renderer::updateScale(Point point) {
-  
-}
-
 void Renderer::drawAxis() {
   SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
   SDL_RenderDrawLine(renderer, 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2);
@@ -83,8 +88,8 @@ void Renderer::drawAxis() {
 }
 void Renderer::drawPoint(int x, int y, int r = 22, int g = 14, int b = 237) { 
   SDL_SetRenderDrawColor(renderer, r, g, b, 255);
-  x = scale * normalizeX(x);
-  y = scale * normalizeY(y);
+  x = normalizeX(x);
+  y = normalizeY(y);
   SDL_RenderDrawPoint(renderer, x, y);
   // draw X
   SDL_RenderDrawLine(renderer, x - 2, y - 2, x + 2, y + 2);
@@ -98,8 +103,8 @@ void Renderer::drawPoint(Point point, int r = 22, int g = 14, int b = 237) {
 void Renderer::drawLine(Line line, int r = 181, int g = 14, int b = 237) {
   SDL_SetRenderDrawColor(renderer, r, g, b, 255);
   SDL_RenderDrawLine(renderer, 
-    line.getStartPoint().getX() * scale, line.getStartPoint().getY() * scale, 
-    line.getEndPoint().getX() * scale, line.getEndPoint().getY() * scale
+    normalizeX(line.getStartPoint().getX()), normalizeY(line.getStartPoint().getY()), 
+    normalizeX(line.getEndPoint().getX()), normalizeY(line.getEndPoint().getY())
   );
 }
 
@@ -110,8 +115,8 @@ void Renderer::drawPolygon(Polygon polygon, int r = 51, int g = 237, int b = 14)
   SDL_Point* points = new SDL_Point[numPoints];
   for (int i = 0; i < numPoints; i++) {
     Point p = polygon.getPoint(i);
-    points[i].x = p.getX() * scale;
-    points[i].y = p.getY() * scale;
+    points[i].x = normalizeX(p.getX());
+    points[i].y = normalizeY(p.getY());
   }
   SDL_RenderDrawLines(renderer, points, numPoints);
   SDL_RenderDrawLine(renderer, points[numPoints - 1].x, points[numPoints - 1].y, points[0].x, points[0].y);
