@@ -48,7 +48,7 @@ public:
 
 int Renderer::normalizeX(int x) {
   // recalculate the scale
-  float maxX = SCREEN_WIDTH / 3;
+  float maxX = SCREEN_WIDTH / 2.3;
   scale = min(scale, abs((float)maxX / x));
   
   // return normalized x
@@ -57,7 +57,7 @@ int Renderer::normalizeX(int x) {
 
 int Renderer::normalizeY(int y) {
   // recalculate the scale
-  float maxY = SCREEN_HEIGHT / 3;
+  float maxY = SCREEN_HEIGHT / 2.3;
   scale = min(scale, abs((float)maxY / y));
   
   // return normalized y
@@ -90,8 +90,15 @@ void Renderer::drawPoint(int x, int y, int r = 22, int g = 14, int b = 237) {
   SDL_SetRenderDrawColor(renderer, r, g, b, 255);
   x = normalizeX(x);
   y = normalizeY(y);
+
+  // mace the points thicker
   SDL_RenderDrawPoint(renderer, x, y);
-  // draw X
+  SDL_RenderDrawPoint(renderer, x-1, y);
+  SDL_RenderDrawPoint(renderer, x+1, y);
+  SDL_RenderDrawPoint(renderer, x, y-1);
+  SDL_RenderDrawPoint(renderer, x, y+1);
+
+  // draw an X
   SDL_RenderDrawLine(renderer, x - 2, y - 2, x + 2, y + 2);
   SDL_RenderDrawLine(renderer, x + 2, y - 2, x - 2, y + 2);
 }
@@ -108,7 +115,7 @@ void Renderer::drawLine(Line line, int r = 181, int g = 14, int b = 237) {
   );
 }
 
-void Renderer::drawPolygon(Polygon polygon, int r = 10, int g = 100, int b = 10) {
+void Renderer::drawPolygon(Polygon polygon, int r = 0, int g = 40, int b = 200) {
   SDL_SetRenderDrawColor(renderer, r, g, b, 255);
 
   int numPoints = polygon.getSize();

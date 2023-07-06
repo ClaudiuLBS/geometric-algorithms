@@ -33,6 +33,7 @@ public:
   ll getY();
 
   bool operator==(const Point& point);
+  bool operator<(const Point& point) const;
   Point& operator=(const Point& point);
   friend ostream& operator<<(ostream& out, Point point);
   friend istream& operator>>(istream& in, Point& point);
@@ -62,6 +63,10 @@ ll Point::getY() { return y; }
 
 bool Point::operator==(const Point& point) {
   return x == point.x && y == point.y;
+}
+bool Point::operator<(const Point& point) const{
+  // distance L1
+  return abs(0 - x) + abs(0 - y) < abs(0 - point.x) + abs(0 - point.y);
 }
 Point& Point::operator=(const Point& point) {
   x = point.x;
@@ -173,6 +178,8 @@ public:
   ll getLeftExtreme() { return leftExtreme; }
   ll getTopExtreme() { return topExtreme; }
   ll getBottomExtreme() { return bottomExtreme; }
+
+  friend istream& operator>>(istream& in, Polygon& polygon);
 };
 
 Polygon::Polygon() {
@@ -227,8 +234,12 @@ void Polygon::read(istream& in) {
   Point p;
   for (in >> pointsCount; pointsCount > 0; pointsCount--) {
     in >> p;
-    points.push_back(p);
+    addPoint(p);
   }
+}
+istream& operator>>(istream& in, Polygon& polygon) {
+  polygon.read(in);
+  return in;
 }
 
 
