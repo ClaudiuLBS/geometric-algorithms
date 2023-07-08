@@ -12,11 +12,38 @@ class Point;
 class Line;
 class Polygon;
 
+/**
+ * @brief Performs the orientation test for three points in a 2D space.
+ *
+ * The orientation test determines whether three points are clockwise, counterclockwise, or collinear.
+ *
+ * @param p1 The first point.
+ * @param p2 The second point.
+ * @param p3 The third point.
+ * @return A value indicating the orientation:
+ *         - Positive value: Points p1, p2, p3 are in counterclockwise order.
+ *         - Negative value: Points p1, p2, p3 are in clockwise order.
+ *         - Zero value: Points p1, p2, p3 are collinear.
+ */
 ll orientationTest(Point p1, Point p2, Point p3);
+
+/**
+ * @brief Performs the orientation test for a line segment and a point in a 2D space.
+ *
+ * The orientation test determines whether the point is to the left, right, or collinear with the line segment.
+ *
+ * @param line The line segment.
+ * @param point The point to test.
+ * @return A value indicating the orientation:
+ *         - Positive value: The point is to the left of the line segment.
+ *         - Negative value: The point is to the right of the line segment.
+ *         - Zero value: The point is collinear with the line segment.
+ */
 ll orientationTest(Line line, Point point);
 
-
-// ============ POINT ============
+/**
+ * @brief Represents a 2D point with x and y coordinates.
+ */
 class Point {
 private:
   ll x;
@@ -65,8 +92,11 @@ bool Point::operator==(const Point& point) {
   return x == point.x && y == point.y;
 }
 bool Point::operator<(const Point& point) const{
-  // distance L1
-  return abs(0 - x) + abs(0 - y) < abs(0 - point.x) + abs(0 - point.y);
+  // sorted by x, and if x are equal, sorted by y
+  if (x == point.x)
+    return y < point.y;
+  else
+    return x < point.x;
 }
 Point& Point::operator=(const Point& point) {
   x = point.x;
@@ -83,7 +113,9 @@ istream& operator>>(istream& in, Point& point) {
 }
 
 
-// ============ LINE ============
+/**
+ * @brief Represents a line segment defined by two points in a 2D space.
+ */
 class Line {
 private:
   Point startPoint;
@@ -156,27 +188,76 @@ ostream& operator<<(ostream& out, Line line) {
 }
 
 
-// ============ POLYGON ============
+/**
+ * @brief Represents a polygon defined by a collection of points in a 2D space.
+ */
 class Polygon {
 private:
-  vector<Point> points;
-  ll rightExtreme;
-  ll leftExtreme;
-  ll topExtreme;
-  ll bottomExtreme;
+  vector<Point> points; /**< The points that define the polygon. */
+  ll rightExtreme; /**< The x-coordinate of the rightmost point in the polygon. */
+  ll leftExtreme; /**< The x-coordinate of the leftmost point in the polygon. */
+  ll topExtreme; /**< The y-coordinate of the topmost point in the polygon. */
+  ll bottomExtreme; /**< The y-coordinate of the bottommost point in the polygon. */
 public:
   Polygon();
   Polygon(vector<Point> points);
 
-  void addPoint(Point& newPoint);
+  /**
+   * @param index The index of the point to retrieve.
+   * @return The point at the specified index.
+   */
   Point getPoint(int index);
+
+  /**
+   * @brief Removes the last point from the polygon.
+   */
+  void removeLastPoint();
+
+  /**
+   * @return The number of points in the polygon.
+   */
   int getSize();
+
+  /**
+   * @brief Adds a new point to the polygon and updates the extreme coordinates.
+   * @note The new point is collinear with the previous and last points, it is discarded to maintain a non-self-intersecting polygon.
+   * @param newPoint The new point to be added to the polygon.
+   */
+  void addPoint(Point& newPoint);
+
+  /**
+   * @brief Checks and removes the last point of the polygon if it is collinear with the previous and first points.
+   */
   void checkLastPoint();
+
+  /**
+   * @brief Reads the polygon data from an input stream.
+   * @param in The input stream to read the polygon data from.
+   */
   void read(istream& in);
 
+  /**
+   * @brief Getter for the rightmost x-coordinate of the polygon.
+   * @return The rightmost x-coordinate of the polygon.
+   */
   ll getRightExtreme() { return rightExtreme; }
+
+  /**
+   * @brief Getter for the leftmost x-coordinate of the polygon.
+   * @return The leftmost x-coordinate of the polygon.
+   */
   ll getLeftExtreme() { return leftExtreme; }
+
+  /**
+   * @brief Getter for the topmost y-coordinate of the polygon.
+   * @return The topmost y-coordinate of the polygon.
+   */
   ll getTopExtreme() { return topExtreme; }
+
+   /**
+   * @brief Getter for the bottommost y-coordinate of the polygon.
+   * @return The bottommost y-coordinate of the polygon.
+   */
   ll getBottomExtreme() { return bottomExtreme; }
 
   friend istream& operator>>(istream& in, Polygon& polygon);
@@ -221,6 +302,10 @@ int Polygon::getSize() {
   return points.size();
 }
 
+void Polygon::removeLastPoint() {
+  points.pop_back();
+}
+
 void Polygon::checkLastPoint() {
   Point p1 = points[points.size() - 2];
   Point p2 = points[points.size() - 1];
@@ -243,7 +328,6 @@ istream& operator>>(istream& in, Polygon& polygon) {
 }
 
 
-// FUNCTIONS
 ll orientationTest(Point p1, Point p2, Point p3) {
   return (
     p3.getX() * p1.getY() + 
@@ -256,14 +340,7 @@ ll orientationTest(Point p1, Point p2, Point p3) {
 }
 
 ll orientationTest(Line line, Point point) {
-  return (
-    point.getX() * line.getStartPoint().getY() + 
-    line.getStartPoint().getX() * line.getEndPoint().getY() - 
-    point.getX() * line.getEndPoint().getY() - 
-    line.getStartPoint().getX() * point.getY() + 
-    line.getEndPoint().getX() * point.getY() - 
-    line.getEndPoint().getX() * line.getStartPoint().getY()
-  );
+  return orientationTest(line.getStartPoint(), line.getEndPoint(), point);
 }
 
 
