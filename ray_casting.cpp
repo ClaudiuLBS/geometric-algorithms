@@ -114,7 +114,6 @@ PointPosition RayCasting::getPointPosition(Point point, Polygon& polygon) {
 }
 
 int main(int argc, char* argv[]) {
-  cout << argc;
   if (argc < 3) {
     cout << "Please pass the input and output files name!\n";
     return 0;
@@ -135,7 +134,7 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < pointsCount; i++) {
     fin >> p;
     pointPositions[p] = RayCasting::getPointPosition(p, polygon);
-    fout << ((pointPositions[p] == INSIDE) ? "INSIDE" : ((pointPositions[p] == OUTSIDE) ? "OUTSIDE" : "BOUNDARY") ) << endl;
+    fout << p << ": " << ((pointPositions[p] == INSIDE) ? "INSIDE" : ((pointPositions[p] == OUTSIDE) ? "OUTSIDE" : "BOUNDARY") ) << endl;
   }
 
   Renderer renderer(800, 800, "Ray Casting");
