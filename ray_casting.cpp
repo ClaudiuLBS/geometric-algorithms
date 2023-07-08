@@ -24,6 +24,12 @@ private:
     linesCrossed = 0;
   }
 public:
+  /**
+   * @brief Determines the position of a point with respect to a polygon.
+   * @param point The point to be tested.
+   * @param polygon The polygon to be tested against.
+   * @return The position of the point: INSIDE, OUTSIDE, or BOUNDARY.
+   */
   static PointPosition getPointPosition(Point point, Polygon& polygon);
 };
 
@@ -31,16 +37,16 @@ long RayCasting::linesCrossed = 0;
 LastLineStatus RayCasting::lastLineStatus = none;
 
 bool RayCasting::checkCrossedLines(Line line, Line extremeLine) {
-  ll pos1  = orientationTest(line, extremeLine.getStartPoint()); // the position of the extremeLine start point compared to line
-  ll pos2 = orientationTest(line, extremeLine.getEndPoint()); // the position of the extremeLine end point compared to line
-  ll pos3 = orientationTest(extremeLine, line.getStartPoint()); // the position of the line start point compared to extremeLine
-  ll pos4 = orientationTest(extremeLine, line.getEndPoint()); // the position of the line end point compared to extremeLine
+  ll pos1  = orientationTest(line, extremeLine.getStartPoint()); // The position of the extremeLine start point compared to line
+  ll pos2 = orientationTest(line, extremeLine.getEndPoint()); // The position of the extremeLine end point compared to line
+  ll pos3 = orientationTest(extremeLine, line.getStartPoint()); // The position of the line start point compared to extremeLine
+  ll pos4 = orientationTest(extremeLine, line.getEndPoint()); // The position of the line end point compared to extremeLine
 
-  // if not crossed
+  // If the lines do not cross
   if (((pos1 > 0 && pos2 > 0) || (pos1 < 0 && pos2 < 0)) || ((pos3 > 0 && pos4 > 0) || (pos3 < 0 && pos4 < 0)))
     return false;
 
-  // if the lines are collinear
+  // If the lines are collinear, check if they intersect or touch at any point
   if (pos1 == 0 && pos2 == 0 && pos3 == 0 && pos4 == 0) {
     if (
       pointInsideLine(line.getStartPoint(), extremeLine) || 
@@ -55,35 +61,37 @@ bool RayCasting::checkCrossedLines(Line line, Line extremeLine) {
 
 
   // Checking if the lines are intersecting only in one point
-  // both points are left (top)
+  // Both points are left (top)
   if (pos3 >= 0 && pos4 >= 0) {
-    // and the last line was touched only in one edge, but it was on the bottom
+
+    // And the last line was touched only in one edge, but it was on the bottom
     if (lastLineStatus == hitBottom)
       linesCrossed += 1;
-    else
-      lastLineStatus = hitTop;
+
+    lastLineStatus = hitTop;
     return true;
   } 
-  // both points are right (bottom)
+  // Both points are right (bottom)
   else if (pos3 <= 0 && pos4 <= 0) {
-    // and the last line was touched only in one edge, but it was on the top
+
+    // And the last line was touched only in one edge, but it was on the top
     if (lastLineStatus == hitTop)
       linesCrossed += 1;
-    else
-      lastLineStatus = hitBottom;
+
+    lastLineStatus = hitBottom;
     return true;
   }
 
-  // the lines are crossed one into another
+  // The lines are crossed one into another
   linesCrossed++;
   lastLineStatus = hitInside;
   return true;
 }
 
 bool RayCasting::pointInsideLine(Point point, Line line) {
-  // if the points are not collinear then the point is not on the line
+  // If the points are not collinear then the point is not on the line
   if (orientationTest(line, point) != 0) return false;
-  // but if they are collinear then we check if the point is on the line
+  // But if they are collinear then we check if the point is on the line
   ll d1 = point.getX() - line.getStartPoint().getX();
   ll d2 = line.getEndPoint().getX() - point.getX();
   return d1*d2 >= 0;
@@ -100,11 +108,11 @@ PointPosition RayCasting::getPointPosition(Point point, Polygon& polygon) {
     else
       line = Line(polygon.getPoint(i), polygon.getPoint(0));
 
-    // if it is equal to one of these points, then it is automatically on the edge of the polygon
+    // If it is equal to one of these points, then it is automatically on the edge of the polygon
     if (point == line.getStartPoint() || point == line.getEndPoint())
       return BOUNDARY;
 
-    //if these two lines intersect and the point is inside the line
+    // If these two lines intersect and the point is inside the line
     if (checkCrossedLines(line, extremeLine) && pointInsideLine(point, line))
       return BOUNDARY;
   }
