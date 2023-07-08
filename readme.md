@@ -1,3 +1,19 @@
+## Prerequisites
+
+Before running this project, make sure you have the SDL2 library installed on your system.
+
+### Installation Instructions
+
+Please follow the steps below to install the SDL2 library: </br>
+
+1. Visit the SDL2 website at [https://www.libsdl.org](https://www.libsdl.org).</br>
+2. Download the appropriate SDL2 library package for your operating system.</br>
+3. Follow the installation instructions provided by SDL2 for your specific platform.</br>
+4. Once the SDL2 library is successfully installed, you can proceed with running the project.</br>
+
+If you encounter any issues during the installation process, please refer to the SDL2 documentation or seek support from the SDL2 community.</br>
+
+
 ## Ray Casting  
 
 **Input file format:** </br>
@@ -16,6 +32,7 @@ Run the program
 ```
 $ ./ray_casting ray_casting.in ray_casting.out
 ```
+![Ray Casting](https://github.com/ClaudiuLBS/geometric-algorithms/raw/master/images/RayCasting.png)
 
 ## Convex Hull
 
@@ -32,3 +49,4 @@ Run the program
 ```
 $ ./convex_hull convex_hull.in convex_hull.out
 ```
+![Convex Hull](https://github.com/ClaudiuLBS/geometric-algorithms/raw/master/images/ConvexHull.png)
